@@ -1,0 +1,13 @@
+{
+  "mode": "auto",
+  "endpoint": "http://127.0.0.1:39401/v1/systemone",
+  "timeoutMs": 30000,
+  "decisionModel": "laya",
+  "minConfidence": 0.5,
+  "fallback": "strong",
+  "candidates": [
+    {"id":"fast","provider":"local-fixture","model":"fast","reasoningEffort":"low","description":"响应快速、成本最低，适合问候、翻译、格式整理和简单事实问答。"},
+    {"id":"standard","provider":"local-fixture","model":"standard","reasoningEffort":"medium","description":"能力与成本均衡，适合单个函数的实现、常规缺陷修复和普通单元测试。"},
+    {"id":"strong","provider":"local-fixture","model":"strong","reasoningEffort":"high","description":"推理能力较强，适合架构设计、复杂数学、并发缺陷、安全分析及跨多个模块的复杂修改。"}
+  ]
+}

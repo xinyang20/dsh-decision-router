@@ -1,0 +1,8 @@
+(version 1)
+(allow default)
+
+; Model workers may answer the manager, but may never initiate a connection.
+; Seatbelt's localhost filter covers loopback; each worker binds 127.0.0.1.
+(deny network*)
+(allow network-bind (local tcp (string-append "localhost:" (param "MODEL_PORT"))))
+(allow network-inbound (local tcp (string-append "localhost:" (param "MODEL_PORT"))))

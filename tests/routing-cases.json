@@ -1,0 +1,20 @@
+[
+  {"id":"zh-format","language":"zh","expected":"fast","prompt":"把字符串 hello world 转成大写，只输出结果。"},
+  {"id":"zh-translate","language":"zh","expected":"fast","prompt":"将这句英文翻译成中文：The meeting starts at three in the afternoon."},
+  {"id":"zh-greeting","language":"zh","expected":"fast","prompt":"你好，简单打个招呼吧。"},
+  {"id":"en-format","language":"en","expected":"fast","prompt":"Sort these words alphabetically and output only the sorted list: pear, apple, orange."},
+  {"id":"en-fact","language":"en","expected":"fast","prompt":"What is the capital of France? Answer with the city name only."},
+  {"id":"en-translate","language":"en","expected":"fast","prompt":"Translate 'Good morning, see you tomorrow' into Spanish."},
+  {"id":"zh-function","language":"zh","expected":"standard","prompt":"写一个 TypeScript 函数，对字符串数组去重并保留首次出现的顺序，附两条单元测试。"},
+  {"id":"zh-bug","language":"zh","expected":"standard","prompt":"修复这个 JavaScript 函数的下标越界问题：function sum(a) { let s=0; for(let i=0;i<=a.length;i++) s+=a[i]; return s; }"},
+  {"id":"zh-unit","language":"zh","expected":"standard","prompt":"为一个函数 add(a, b) 编写 Vitest 单元测试，覆盖正数、负数和零。"},
+  {"id":"en-function","language":"en","expected":"standard","prompt":"Implement a Python function that groups a list of strings by their first letter. Include a test for empty input."},
+  {"id":"en-bug","language":"en","expected":"standard","prompt":"Fix this JavaScript filter so it removes the matching item: items.filter(item => item.id === deletedId). Explain the single-line fix."},
+  {"id":"en-unit","language":"en","expected":"standard","prompt":"Write unit tests for a clamp(number, min, max) function. Cover values inside the interval and beyond either boundary."},
+  {"id":"zh-architecture","language":"zh","expected":"strong","prompt":"设计跨三个区域的分布式支付事务系统，要求网络分区和节点崩溃时不重复扣款，分析一致性保证、恢复协议和取舍。"},
+  {"id":"zh-concurrency","language":"zh","expected":"strong","prompt":"排查数据库事务、消息队列和缓存之间偶发的并发竞态，建立故障时序模型，提出可验证的一致性修复方案。"},
+  {"id":"zh-security","language":"zh","expected":"strong","prompt":"审计多租户身份认证、对象存储授权和异步任务链路中的组合越权风险，给出完整威胁模型与跨模块修复策略。"},
+  {"id":"en-architecture","language":"en","expected":"strong","prompt":"Design a multi-region payment ledger that prevents double spending under partitions, crashes, and delayed messages. Analyze consistency, recovery, and failure tradeoffs."},
+  {"id":"en-concurrency","language":"en","expected":"strong","prompt":"Diagnose a rare race involving database commits, an outbox publisher, and cache invalidation. Derive the interleavings and design a verifiable cross-module fix."},
+  {"id":"en-security","language":"en","expected":"strong","prompt":"Threat-model a multi-tenant service spanning authentication, object storage, and asynchronous workers. Analyze confused-deputy escalation paths and propose coordinated architectural fixes."}
+]

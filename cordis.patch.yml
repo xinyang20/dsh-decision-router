@@ -1,0 +1,8 @@
+- insert:
+    - id: dsh-decision-router
+      name: dsh-decision-router
+      config:
+        mode: off
+        endpoint: http://127.0.0.1:39401/v1/systemone
+        fallback: null
+        candidates: []
