@@ -1,23 +1,69 @@
 {
   "name": "dsh-decision-router",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "type": "module",
   "description": "Decision-model-powered routing for DeepSeek Harness, with local inference and opt-in cloud decisions.",
   "license": "MIT",
   "author": "xinyang20",
-  "repository": { "type": "git", "url": "git+https://github.com/xinyang20/dsh-decision-router.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xinyang20/dsh-decision-router.git"
+  },
   "homepage": "https://github.com/xinyang20/dsh-decision-router#readme",
-  "bugs": { "url": "https://github.com/xinyang20/dsh-decision-router/issues" },
-  "keywords": ["dsh", "dsh-plugin", "deepseek-harness", "model-routing", "system-one", "local-inference"],
+  "bugs": {
+    "url": "https://github.com/xinyang20/dsh-decision-router/issues"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "model-routing",
+    "system-one",
+    "local-inference"
+  ],
   "packageManager": "pnpm@10.33.2",
-  "engines": { "node": "^22.19.0 || >=24.0.0" },
+  "engines": {
+    "node": "^24.22.3 || >=26.13.1",
+    "dsh": "0.2.3-alpha.2"
+  },
   "main": "./src/index.js",
-  "exports": { ".": "./src/index.js", "./client": "./lib/client.js", "./package.json": "./package.json" },
-  "files": ["src", "lib", "local", "scripts", "config", "tests", "pyproject.toml", "uv.lock", "pnpm-lock.yaml", ".npmrc", "cordis.patch.yml", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md"],
-  "dependencies": { "@deepseek-ai/dsh-home-paths": "0.2.0-rc.2" },
-  "peerDependencies": { "@deepseek-ai/cordis": "~4.0.4", "@deepseek-ai/dsh": "0.2.0-rc.2", "@deepseek-ai/dsh-llm": "0.2.0-rc.2" },
-  "devDependencies": { "@deepseek-ai/cordis": "4.0.4", "@deepseek-ai/dsh": "0.2.0-rc.2", "@deepseek-ai/dsh-llm": "0.2.0-rc.2", "esbuild": "0.25.12" },
+  "exports": {
+    ".": "./src/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "lib",
+    "local",
+    "scripts",
+    "config",
+    "tests",
+    "pyproject.toml",
+    "uv.lock",
+    "pnpm-lock.yaml",
+    ".npmrc",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "dependencies": {
+    "@deepseek-ai/dsh-home-paths": "0.2.3-alpha.2"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.2.0-alpha.1",
+    "@deepseek-ai/dsh": "0.2.3-alpha.2",
+    "@deepseek-ai/dsh-llm": "0.2.3-alpha.2"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "4.2.0-alpha.1",
+    "@deepseek-ai/cordis-plugin-group": "1.2.0-alpha.1",
+    "@deepseek-ai/dsh": "0.2.3-alpha.2",
+    "@deepseek-ai/dsh-llm": "0.2.3-alpha.2",
+    "esbuild": "0.25.12"
+  },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "build": "node scripts/build.mjs",
@@ -37,10 +83,20 @@
   },
   "dsh": {
     "manifestVersion": 1,
-    "bundle": { "patch": "./cordis.patch.yml" },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
     "client": {
       "platform": "web",
-      "inject": ["@deepseek-ai/dsh-client-ui-renderer", "@deepseek-ai/dsh-client-ui-layout", "@deepseek-ai/dsh-client-ui-sidebar", "@deepseek-ai/dsh-client-ui-workspace", "@deepseek-ai/dsh-client-ui-conversation", "@deepseek-ai/dsh-client-locale", "@deepseek-ai/dsh-client-shortcuts"]
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-workspace",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-shortcuts"
+      ]
     }
   }
 }

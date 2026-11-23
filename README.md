@@ -11,24 +11,24 @@
 - **原生设置体验**：“设置 → 自动选模”统一编辑配置，选择器沿用 DSH 菜单风格。侧边栏默认开启，提供只读总览和最近路由记录，也可在设置中关闭。
 - **明确回退**：决策超时、服务失败或置信度不足时使用你指定的回退路由。本地失败不会自行转向云端，云端失败也不会换用其他决策服务。
 
-已验证宿主版本为 **DSH `0.2.0-rc.2`**。DSH 仍在快速迭代，其他版本需要单独验证。
+已验证宿主版本为 **DSH `0.2.3-alpha.2`**。使用 DSH `0.2.0-rc.2` 的用户请保留插件 `v0.1.0`。
 
 ## 安装
 
-准备已能运行的 DSH。插件安装需要 Node.js `^22.19.0 || >=24.0.0` 和 pnpm；在 DSH 中先配置可用的执行模型及其凭据。
+准备已能运行的 DSH。插件安装需要 Node.js `^24.22.3 || >=26.13.1` 和 pnpm；在 DSH 中先配置可用的执行模型及其凭据。
 
-从 GitHub 安装 `v0.1.0`：
+从 GitHub 安装 `v0.2.0`：
 
 ```sh
-dsh plugin --profile web add github:xinyang20/dsh-decision-router#v0.1.0
+dsh plugin --profile web add github:xinyang20/dsh-decision-router#v0.2.0
 ```
 
-仓库包含预构建的 `lib/client.js`，插件安装无需执行 `prepare`。`#v0.1.0` 指定发布标签；需要固定到具体提交时可将标签替换为提交 ID。Git 安装由 DSH 调用 pnpm 完成，参见 [DSH 安装教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)及 [pnpm Git 来源说明](https://pnpm.io/package-sources#git-repository)。
+仓库包含预构建的 `lib/client.js`，插件安装无需执行 `prepare`。`#v0.2.0` 指定发布标签；需要固定到具体提交时可将标签替换为提交 ID。Git 安装由 DSH 调用 pnpm 完成，参见 [DSH 安装教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)及 [pnpm Git 来源说明](https://pnpm.io/package-sources#git-repository)。
 
 也可从 [Releases](https://github.com/xinyang20/dsh-decision-router/releases) 下载预构建安装包，在下载目录执行：
 
 ```sh
-dsh plugin --profile web add ./dsh-decision-router-0.1.0.tgz
+dsh plugin --profile web add ./dsh-decision-router-0.2.0.tgz
 ```
 
 安装后打开 DSH Web；若当前页面未出现插件入口，重启 DSH 并刷新页面。插件安装本身不会下载决策模型或启动本地推理服务。
@@ -60,7 +60,7 @@ dsh plugin --profile web add ./dsh-decision-router-0.1.0.tgz
 在本机单独克隆同版本仓库，用于准备和启动服务。准备 Node.js、pnpm；使用 Laya 时还需要 [uv](https://docs.astral.sh/uv/)。
 
 ```sh
-git clone --branch v0.1.0 --depth 1 https://github.com/xinyang20/dsh-decision-router.git
+git clone --branch v0.2.0 --depth 1 https://github.com/xinyang20/dsh-decision-router.git
 cd dsh-decision-router
 pnpm install --frozen-lockfile
 ```

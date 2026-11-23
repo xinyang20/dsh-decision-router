@@ -8,7 +8,7 @@ export function isAutoModel(selection) {
 }
 
 /** Advertise routing intent through DSH's native model catalog and durable selection. */
-export async function registerAutoModel(ctx) {
+export async function registerAutoModel(ctx, routesBySignal = new WeakMap()) {
   const modelInfo = () => ({
     provider: AUTO_PROVIDER,
     id: AUTO_MODEL,
@@ -29,6 +29,16 @@ export async function registerAutoModel(ctx) {
       // Capabilities and limits belong to the executor chosen by agent/request.
       // In particular, effort must come from that route's saved configuration.
       return modelInfo();
+    }
+    async prepareCall(provider, model, signal) {
+      const selected = routesBySignal.get(signal);
+      if (!selected) return super.prepareCall(provider, model, signal);
+      routesBySignal.delete(signal);
+      const call = await ctx.llm.prepareCall(selected, signal);
+      return {
+        model: { ...modelInfo(), context: call.context, inputModalities: call.inputModalities, systemPromptUpdate: call.systemPromptUpdate, toolUpdate: call.toolUpdate },
+        stream: options => call.stream({ ...options, ...call.config }),
+      };
     }
     async *stream(options) {
       options.signal?.throwIfAborted();

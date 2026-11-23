@@ -13,6 +13,7 @@ const { default: SessionRegistry } = await importDsh('@deepseek-ai/dsh-session')
 const { default: SessionProjectionRegistry } = await importDsh('@deepseek-ai/dsh-session-projection');
 const { default: SystemPrompt } = await importDsh('@deepseek-ai/dsh-system-prompt');
 const { default: ToolRuntime, defineTool } = await importDsh('@deepseek-ai/dsh-tools');
+const NativeExecutor = await importDsh('@deepseek-ai/dsh-tool-executor-native');
 const { default: AgentLoop } = await importDsh('@deepseek-ai/dsh-agent-loop');
 
 export async function createHarness(config = {}, { toolStep = false, unavailable = [], onTool, useDefaultStorage = false } = {}) {
@@ -21,7 +22,7 @@ export async function createHarness(config = {}, { toolStep = false, unavailable
   if (settingsRoot) config = { ...config, modelsFile: path.join(settingsRoot, 'model-tiers.json') };
   const ctx = new Context();
   const calls = []; const toolResults = []; const handles = [];
-  const selections = new WeakMap();
+
   class FixtureAdapter extends LlmAdapter {
     async listModels(provider) { return ['fast','standard','strong'].filter(id => !unavailable.includes(id)).map(id => ({ provider, id, name: id })); }
     async resolveModel(provider, id) {
@@ -47,7 +48,7 @@ export async function createHarness(config = {}, { toolStep = false, unavailable
       }
     }
   }
-  for (const [plugin, cfg] of [[SessionProjectionRegistry, {}], [SessionRegistry, {}], [AgentRegistry, {}], [LlmRuntime, {}], [SystemPrompt, { includeHarnessIdentity: false, includeRuntimeContext: false }], [ToolRuntime, { mode: 'native' }], [AgentLoop, {}]]) await ctx.plugin(plugin, cfg).await();
+  for (const [plugin, cfg] of [[SessionProjectionRegistry, {}], [SessionRegistry, {}], [AgentRegistry, {}], [LlmRuntime, {}], [SystemPrompt, { includeHarnessIdentity: false, includeRuntimeContext: false }], [ToolRuntime, {}], [NativeExecutor, {}], [AgentLoop, {}]]) await ctx.plugin(plugin, cfg).await();
   ctx.llm.registerAdapter(['local-fixture'], new FixtureAdapter());
   ctx.tools.register(defineTool({ name: 'fixture_add', description: 'Local deterministic integration fixture; adds two numbers.', parameters: { a: { type: 'number', required: true }, b: { type: 'number', required: true } }, output: { schema: { type: 'number' }, render: (_args, result) => [{ type: 'text', text: String(result) }] }, execute: ({a,b}) => { toolResults.push(a+b); onTool?.(); return a+b; } }));
   try { await ctx.plugin(routerPlugin, config).await(); }
@@ -58,14 +59,11 @@ export async function createHarness(config = {}, { toolStep = false, unavailable
   }
   function selectModel(agent, selected) {
     const selection = structuredClone(selected);
-    agent.session.append('model/selection', selection);
-    selections.get(agent).current = selection;
+    agent.model.select(selection);
   }
   async function createAgent(selection = { provider: AUTO_PROVIDER, model: AUTO_MODEL }) {
     const handle = await ctx.agents.create({ sessionId: randomUUID(), agentOptions: selection });
-    const reference = { current: undefined, assembled: undefined };
-    selections.set(handle.agent, reference);
-    installModelSelection(handle.agent.ctx, reference);
+    installModelSelection(handle.agent.ctx);
     selectModel(handle.agent, selection);
     handles.push(handle); return handle.agent;
   }

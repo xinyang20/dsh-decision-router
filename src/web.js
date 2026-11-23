@@ -7,13 +7,13 @@ function failure(status, message) {
   return Object.assign(new Error(message), { status });
 }
 
-export function admitLocal(req, connection) {
+export function admitLocal(req, peer) {
   if (!['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress)) throw failure(403, '仅允许本机访问。');
   const host = req.headers.host;
   if (!/^(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/.test(host ?? '')) throw failure(403, '请求主机不受信任。');
   if (req.headers['sec-fetch-site'] === 'cross-site' || (req.headers.origin && req.headers.origin !== `http://${host}`)) throw failure(403, '请求来源不匹配。');
-  const result = connection.admit(req);
-  if ('rejection' in result) throw failure(result.rejection, '请通过 DSH 的本地登录链接打开页面。');
+  if (!peer) throw failure(401, '请通过 DSH 的本地登录链接打开页面。');
+  if (peer.principal.kind !== 'owner') throw failure(403, '仅允许宿主所有者访问。');
 }
 
 async function body(req) {
@@ -58,9 +58,9 @@ export function mountWeb(ctx, router, control) {
     })();
     return healthPending;
   }
-  ctx.effect(() => ctx.webServer.register({ kind: 'prefix', path: API, handler: async (req, res) => {
+  ctx.effect(() => ctx.webServer.register({ kind: 'prefix', path: API, handler: async (req, res, peer) => {
     try {
-      admitLocal(req, ctx.connection);
+      admitLocal(req, peer);
       const route = new URL(req.url, `http://${req.headers.host}`).pathname.slice(API.length);
       if (req.method === 'GET' && route === '/state') {
         const preview = ctx.get('autoRouterPreview');

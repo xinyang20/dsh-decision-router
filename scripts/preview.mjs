@@ -52,7 +52,6 @@ const patch = [
   { id: 'session-telemetry-otel', disabled: true },
   { id: 'desktop-product-telemetry', disabled: true },
   { id: 'workspace-controller', config: { documentsDirectory: path.join(root, '.runtime/documents') } },
-  { id: 'tools', config: { mode: 'native' } },
   { insert: [{ id: 'auto-router-preview-fixture', name: path.join(root, 'local/fixture.mjs') }] },
 ];
 const overlay = path.join(root, '.runtime/preview.patch.yml');

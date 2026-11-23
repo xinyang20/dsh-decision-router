@@ -4,7 +4,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { runtimeRoot } from './environment.mjs';
 
-export const dshVersion = '0.2.0-rc.2';
+export const dshVersion = '0.2.3-alpha.2';
 const projectRequire = createRequire(path.join(runtimeRoot, 'package.json'));
 let runtimeResolvers;
 
@@ -35,7 +35,7 @@ export async function installedPackage(name) {
       throw error;
     }
     const manifest = JSON.parse(await readFile(manifestFile, 'utf8'));
-    const expected = name === '@deepseek-ai/cordis' ? '4.0.4' : dshVersion;
+    const expected = name === '@deepseek-ai/cordis' ? '4.2.0-alpha.1' : dshVersion;
     if (manifest.version !== expected) throw new Error(`需要 ${name} ${expected}，当前为 ${manifest.version}。`);
     return { directory: path.dirname(manifestFile), manifest, resolve };
   }

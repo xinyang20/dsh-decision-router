@@ -10,7 +10,8 @@ export const inject = ['llm'];
 export async function apply(ctx, config = {}) {
   const router = new ModelRouter({ ...config, modelsFile: config.modelsFile ?? dshHomePath('plugins', name, 'model-tiers.json') }, ctx.llm);
   const models = await createModelSettings(router);
-  await registerAutoModel(ctx);
+  const routesBySignal = new WeakMap();
+  await registerAutoModel(ctx, routesBySignal);
   const turns = new WeakMap();
   let modes = new WeakMap();
   let pins = new WeakMap();
@@ -34,8 +35,7 @@ export async function apply(ctx, config = {}) {
   const control = {
     models,
     snapshot: agent => {
-      const selected = agent.session.snapshotEvents().findLast(event => event.type === 'model/selection')?.data
-        ?? agent.session.requestHeader()?.config ?? ctx.get('agentDefaultModel')?.currentSelection() ?? null;
+      const selected = agent.model.current();
       return { mode: modeFor(agent), pin: pinFor(agent), selected, autoSelected: isAutoModel(selected) };
     },
     setMode(agent, mode) {
@@ -50,7 +50,7 @@ export async function apply(ctx, config = {}) {
     receipts: () => structuredClone(receipts),
   };
   ctx.provide('autoModelRouter', control);
-  ctx.inject(['webServer', 'connection', 'agents'], web => mountWeb(web, router, control));
+  ctx.inject(['webServer', 'agents'], web => mountWeb(web, router, control));
   ctx.effect(() => () => { receipts.length = 0; });
   ctx.effect(() => ctx.on('agent/pre-step', async ({ agent, turn, signal }, next) => {
     const decision = await next();
@@ -80,7 +80,8 @@ export async function apply(ctx, config = {}) {
     }
     if (mode === 'off') {
       entry.pausedCandidate ??= await fallback();
-      return selectConfig(base, entry.pausedCandidate);
+      routesBySignal.set(signal, selectConfig(base, entry.pausedCandidate));
+      return base;
     }
     if (!entry.pending) {
       const pin = pinFor(agent);
@@ -101,6 +102,7 @@ export async function apply(ctx, config = {}) {
       if (receipts.length > 200) receipts.shift();
     }
     // A turn uses one decision even when the real DSH loop performs several tool steps.
-    return applied;
+    routesBySignal.set(signal, applied);
+    return base;
   }));
 }

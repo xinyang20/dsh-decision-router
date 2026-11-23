@@ -389,14 +389,14 @@ test('web state, model catalog and independent preference responses never expose
   const router = new ModelRouter({ ...config, endpoint: 'http://127.0.0.1:9/v1/systemone', decisionModel: CLOUD_DECISION_MODEL, cloudDecision: cloud(secret), modelsFile: path.join(root, 'routes.json') }, { listProviders: () => [] });
   const models = await createModelSettings(router);
   let handler;
-  const ctx = { effect: callback => callback(), webServer: { register: route => { handler = route.handler; return () => {}; } }, connection: { admit: () => ({}) }, get: () => undefined, agents: { list: () => [] } };
+  const ctx = { effect: callback => callback(), webServer: { register: route => { handler = route.handler; return () => {}; } }, get: () => undefined, agents: { list: () => [] } };
   mountWeb(ctx, router, { models, snapshot: () => ({}), receipts: () => [] });
   const request = async (method, route, payload) => {
     const req = Readable.from(payload === undefined ? [] : [Buffer.from(JSON.stringify(payload))]);
     Object.assign(req, { method, url: API + route, socket: { remoteAddress: '127.0.0.1' }, headers: { host: '127.0.0.1:39393', 'content-type': 'application/json' } });
     let status; let text;
     const res = { writeHead: value => { status = value; }, end: value => { text = value; }, destroy: () => assert.fail('unexpected response destruction') };
-    await handler(req, res);
+    await handler(req, res, { principal: { kind: 'owner' } });
     assert.equal(status, 200);
     assert.equal(text.includes(secret), false);
     assert.equal(text.includes('"apiKey"'), false);
